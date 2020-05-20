@@ -22,26 +22,28 @@
     <!-- footer -->
     <template slot="modal-footer">
       <div>
-        <b-button id="task-backward" variant="warning" v-if="isPrev">
-          Back
-        </b-button>
+        <div v-if="isPrev">
+          <b-button id="task-backward" variant="warning">
+            Back
+          </b-button>
 
-        <b-popover target="task-backward" placement="top" triggers="focus">
-          <template slot="title">
-            Send backward?
-          </template>
-          <b-button variant="tranparent" size="sm" class="mx-1">
-            No, cancel!
-          </b-button>
-          <b-button
-            variant="primary"
-            size="sm"
-            class="mx-1"
-            @click="updatePrev"
-          >
-            Yes, sure!
-          </b-button>
-        </b-popover>
+          <b-popover target="task-backward" placement="top" triggers="focus">
+            <template slot="title">
+              Send backward?
+            </template>
+            <b-button variant="tranparent" size="sm" class="mx-1">
+              No, cancel!
+            </b-button>
+            <b-button
+              variant="primary"
+              size="sm"
+              class="mx-1"
+              @click="updatePrev"
+            >
+              Yes, sure!
+            </b-button>
+          </b-popover>
+        </div>
       </div>
       <div>
         <b-button id="task-delete" variant="danger">Delete</b-button>
@@ -64,26 +66,28 @@
         </b-popover>
       </div>
       <div>
-        <b-button id="task-forward" variant="success" v-if="isNext">
-          Next
-        </b-button>
+        <div v-if="isNext">
+          <b-button id="task-forward" variant="success">
+            Next
+          </b-button>
 
-        <b-popover target="task-forward" placement="top" triggers="focus">
-          <template slot="title">
-            Send forward?
-          </template>
-          <b-button variant="tranparent" size="sm" class="mx-1">
-            No, cancel!
-          </b-button>
-          <b-button
-            variant="primary"
-            size="sm"
-            class="mx-1"
-            @click="updateNext"
-          >
-            Yes, sure!
-          </b-button>
-        </b-popover>
+          <b-popover target="task-forward" placement="top" triggers="focus">
+            <template slot="title">
+              Send forward?
+            </template>
+            <b-button variant="tranparent" size="sm" class="mx-1">
+              No, cancel!
+            </b-button>
+            <b-button
+              variant="primary"
+              size="sm"
+              class="mx-1"
+              @click="updateNext"
+            >
+              Yes, sure!
+            </b-button>
+          </b-popover>
+        </div>
       </div>
     </template>
   </b-modal>

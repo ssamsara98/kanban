@@ -4,7 +4,8 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "public",
+    "site": "kanban-glassy-sky-277312",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",

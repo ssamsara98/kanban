@@ -1,8 +1,4 @@
 <template>
-  <!-- <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div> -->
   <div id="board">
     <!-- Navbar -->
     <b-row
@@ -12,9 +8,9 @@
     >
       <h1>KamVan Board</h1>
 
-      <b-button v-b-modal.modal-new-task size="sm" variant="primary"
-        >New Task</b-button
-      >
+      <b-button v-b-modal="`modal-${modalNewTask}`" size="sm" variant="primary">
+        New Task
+      </b-button>
     </b-row>
     <!-- Board -->
     <b-row style="margin: 0 -8px;">
@@ -30,84 +26,114 @@
           :color="category.color"
           :name="category.name"
           :data="category.data"
+          :status="category.status"
         />
       </b-col>
     </b-row>
 
     <!-- Modal -->
-    <my-modal modal-id="new-task" />
+    <!-- Modal - New Task -->
+    <my-modal-new-task :modal-id="modalNewTask" />
+    <!-- Modal - Detail -->
+    <my-modal-task-detail :modal-id="modalItemDetail" />
   </div>
 </template>
 
 <script>
-/* eslint-disable vue/no-unused-components */
-/* eslint-disable no-unused-vars */
 // @ is an alias to /src
-// import HelloWorld from "@/components/HelloWorld.vue";
 import MyCard from "@/components/MyCard";
-import MyModal from "@/components/MyModal";
-import db from "@/db";
+import MyModalNewTask from "@/components/MyModalNewTask";
+import MyModalTaskDetail from "@/components/MyModalTaskDetail";
+import { firestore } from "../api/firebase";
 
 export default {
   name: "Home",
   components: {
-    // HelloWorld,
     MyCard,
-    MyModal,
+    MyModalNewTask,
+    MyModalTaskDetail,
   },
   data() {
     return {
+      modalNewTask: "new-task",
+      modalItemDetail: "item-detail",
       categories: [
         {
           name: "Backlog",
           color: "danger",
-          data: [],
+          status: 0,
+          data: null,
         },
         {
           name: "To-Do",
           color: "warning",
-          data: [],
+          status: 1,
+          data: null,
         },
         {
           name: "Doing",
           color: "info",
-          data: [],
+          status: 2,
+          data: null,
         },
         {
           name: "Done",
           color: "success",
-          data: [],
+          status: 3,
+          data: null,
         },
       ],
     };
   },
   methods: {
-    getData() {
+    getData(database) {
       const vm = this;
-      setTimeout(() => {
-        db.map((el) => {
-          switch (el.status) {
-            case 0:
-              vm.categories[0].data.push(el);
-              break;
-            case 1:
-              vm.categories[1].data.push(el);
-              break;
-            case 2:
-              vm.categories[2].data.push(el);
-              break;
-            case 3:
-              vm.categories[3].data.push(el);
-              break;
-            default:
-              break;
-          }
-        });
-      }, 1570);
+      // cleaning
+      for (const category of vm.categories) {
+        category.data = [];
+      }
+      // filling
+      for (const item of database) {
+        switch (item.status) {
+          case 0:
+            vm.categories[0].data.push(item);
+            break;
+          case 1:
+            vm.categories[1].data.push(item);
+            break;
+          case 2:
+            vm.categories[2].data.push(item);
+            break;
+          case 3:
+            vm.categories[3].data.push(item);
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    getFirestore() {
+      const kanban = firestore.collection("kanban").orderBy("createdAt", "asc");
+      kanban.onSnapshot(
+        (querySnapshot) => {
+          const database = [];
+          querySnapshot.forEach((doc) => {
+            const item = {
+              id: doc.id,
+              ...doc.data(),
+            };
+            database.push(item);
+          });
+          this.getData(database);
+        },
+        (err) => {
+          console.error(`Encountered error: ${err}`);
+        }
+      );
     },
   },
   created() {
-    this.getData();
+    this.getFirestore();
   },
 };
 </script>
